@@ -4,7 +4,7 @@ from config import Config
 
 # Web API Documentation: http://your-sonarqube-url/web_api
 
-CONF = Config()
+CONF = Config() # Gets Sonar connection config from environment variables and sets the supported keys
 
 class SonarExporter:
 

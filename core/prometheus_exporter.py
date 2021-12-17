@@ -1,3 +1,4 @@
+from os import system
 from prometheus_client.core import GaugeMetricFamily
 import prometheus_client as prom
 import time
@@ -6,11 +7,12 @@ from sonarqube_exporter import get_all_projects_with_metrics
 class CustomSonarExporter:
 
     def __init__(self):
-        pass
+        pass #Null statement
 
     def collect(self):
-        projects = get_all_projects_with_metrics()
-
+        projects = get_all_projects_with_metrics() # class Project
+        
+        # Formats the metric information extracted from SonarQube into readable data by prometheus
         for project in projects:
             for metric in project.metrics:
                 label_list = ['id', 'key']
@@ -41,7 +43,8 @@ class CustomSonarExporter:
 if __name__ == "__main__":
     custom_exporter = CustomSonarExporter()
     prom.REGISTRY.register(custom_exporter)
-    prom.start_http_server(9120)
+    prom.start_http_server(9120) #Starts a webserver in given port
 
+# Infinite loop. Necessary for keeping the process running and thus the port exposed.
     while True:
-        time.sleep(3)
+        time.sleep(2)
