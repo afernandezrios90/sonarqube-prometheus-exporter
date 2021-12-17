@@ -21,10 +21,12 @@ class SonarExporter:
             return req.json()
 
     def get_all_projects(self):
+        # Returns JSON object (dict) with all projects
         return self._request(endpoint='api/components/search?qualifiers=TRK&ps=250')
 
     def get_all_metrics(self):
-        return self._request(endpoint='api/metrics/search')
+        # Returns JSON object (dict) with all the metric definitions
+        return self._request(endpoint='api/metrics/search?ps=150')
 
     def get_measures_component(self, component_key, metric_key):
         return self._request(endpoint="api/measures/component?component={}&metricKeys={}".format(component_key, metric_key))
