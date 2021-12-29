@@ -14,7 +14,7 @@ curl -XGET -u {USER}:{PASSWORD} https://mysonarqube.example.com
 ```
 > Where {USER} and {PASSWORD}, replace with values that make sense in your reality.
 
-### Externalização dos valores requeridos para autenticar na API
+### External values required to authenticate to the API
 Export the environment variables to the values required to connect to Sonarqube. In the file **config.py**, the variables are decoded:
 - SONAR_URL
 - SONAR_USER
@@ -26,7 +26,30 @@ export SONAR_URL=https://mysonarqube.example.com
 export SONAR_USER={USER}
 export SONAR_PASSWORD={PASSWORD}
 ```
-> Where {USER} and {PASSWORD}, replace with values that make sense in your reality.
+Or in Windows:
+```
+$env:SONAR_URL = 'https://mysonarqube.example.com'
+$env:SONAR_USER = '{USER}'
+$env:SONAR_PASSWORD = '{PASSWORD}'
+```
+> Where {USER} and {PASSWORD} must be the credentials of an authorized SonarQube account
+
+Future optional values (not yet implemented):
+- MAX_PROJECTS
+- MAX_METRICS
+
+### Deployment using Docker:
+1. Build the image from the repo:
+`docker build https://github.com/afernandezrios90/sonarqube-prometheus-exporter.git -t {image_tag}`
+2. Run the image setting the environment variables:
+`docker run -d -p 9120:9120 -e SONAR_URL=<sonar_url> -e SONAR_USER=<user> -e SONAR_PASSWORD=<password> {image_tag}`
+
+### Current limitations
+The current code supports reading a maximum of:
+- 250 different projects
+- 150 different metrics
+
+However, SonarQube API allow higher limits, and they can be modified in the code. Maximum values can be passed as environment variables in future releases. 
 
 ### Add or remove Sonarqube metrics
 
