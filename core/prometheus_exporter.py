@@ -20,6 +20,11 @@ class CustomSonarExporter:
                 label_values.append(project.id)
                 label_values.append(project.key)
                 label_values.append(project.name)
+
+                if len(project.tags):
+                    label_list.append('tags')
+                    label_values.append("|".join(project.tags))
+
                 for metric_value in metric.values:
                     if metric_value[0] == 'value':
                         value_to_set = metric_value[1]

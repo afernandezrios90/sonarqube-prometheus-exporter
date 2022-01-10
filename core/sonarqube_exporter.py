@@ -174,6 +174,5 @@ def get_all_projects_with_metrics():
         p.metrics = client.get_measures_component(component_key=p.key, metric_key=metrics_comma_separated)
         p.organize_measures(metrics)
         projects.append(p)
-        print(p.tags)
 
     return projects
