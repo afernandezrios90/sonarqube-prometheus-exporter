@@ -37,6 +37,7 @@ class Project:
         self._metrics = None
         self._name = None
         self._organization = None
+        self._tags = None
 
     @property
     def name(self):
@@ -61,6 +62,14 @@ class Project:
     @organization.setter
     def organization(self, value):
         self._organization = value
+
+    @property
+    def tags(self):
+        return self._tags
+
+    @tags.setter
+    def tags(self, value):
+        self._tags = value
 
     def organize_measures(self, metrics : list):
         metric_obj_list = []
@@ -161,8 +170,10 @@ def get_all_projects_with_metrics():
         p = Project(identifier=project['id'], key=project['key'])
         p.name = project['name']
         p.organization = project['organization']
+        p.tags = project['tags']
         p.metrics = client.get_measures_component(component_key=p.key, metric_key=metrics_comma_separated)
         p.organize_measures(metrics)
         projects.append(p)
+        print(p.tags)
 
     return projects
