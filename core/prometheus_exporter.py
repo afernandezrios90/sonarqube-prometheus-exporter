@@ -11,6 +11,8 @@ class CustomSonarExporter:
     def collect(self):
         projects = get_all_projects_with_metrics()
 
+        tags = set()
+
         for project in projects:
             for metric in project.metrics:
                 label_list = ['id', 'key', 'name']
@@ -24,6 +26,8 @@ class CustomSonarExporter:
                 if len(project.tags):
                     label_list.append('tags')
                     label_values.append("|".join(project.tags))
+                    # Add any new tags to the tag list
+                    tags.update(project.tags)
 
                 for metric_value in metric.values:
                     if metric_value[0] == 'value':
@@ -32,6 +36,7 @@ class CustomSonarExporter:
                         label_list.append(metric_value[0])
                         label_values.append(metric_value[1])
 
+                # Expose also the tag list as metrics with a dummy value "1" to be able to filter in Grafana by tags
                 gauge = GaugeMetricFamily(
                     name="sonar_{}".format(metric.key),
                     documentation=metric.description,
@@ -43,6 +48,17 @@ class CustomSonarExporter:
                     value=value_to_set
                 )
                 yield gauge
+
+
+        gauge_tag_list = GaugeMetricFamily(
+            name="sonar_tag_index",
+            documentation="Tag index for filtering",
+            labels=['tag']
+            )
+        for tag in tags:
+            gauge_tag_list.add_metric(labels=[tag],value=1)
+        yield gauge_tag_list
+
 
 if __name__ == "__main__":
     custom_exporter = CustomSonarExporter()
