@@ -6,6 +6,9 @@ With the intention of using Sonarqube for a range of projects, being able to inc
 
 Importantly, Prometheus does not understand non-numeric values, so be aware if you want to add metrics that can return non-numeric values.
 
+### Data flow diagram
+![picture](https://github.com/afernandezrios90/sonarqube-prometheus-exporter/blob/master/images/Diagram.png)
+
 ### Main features
 
 The exporter allows to gather the following metrics:
