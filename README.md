@@ -16,6 +16,9 @@ The exporter allows to gather the following metrics:
 - All active projects and their metrics and tags
 - The list of tags used to use tag filter in the dashboards
 
+Constraints:
+- Proper tagging system is highly encouraged in SonarQube. Project with no tag won't be displayed as the pre-filter is done by tags.
+
 ### Grafana dashboards
 
 Two sample dashboard definitions are provided as well:
@@ -27,9 +30,6 @@ Two sample dashboard definitions are provided as well:
 - Executive dashboard
   - User is able to select one tag
   - For a given tag, it displays the historical value of 4 most common metrics for all the projects with that tag: bugs, vulnerabilities, code coverage & code smells
-
-Constraints:
-- Proper tagging system is highly encouraged in SonarQube. Project with no tag won't be displayed as the pre-filter is done by tags.
 
 ### How to use
 
