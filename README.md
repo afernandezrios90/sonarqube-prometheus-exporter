@@ -6,7 +6,27 @@ With the intention of using Sonarqube for a range of projects, being able to inc
 
 Importantly, Prometheus does not understand non-numeric values, so be aware if you want to add metrics that can return non-numeric values.
 
-## How to use
+### Main features
+
+The exporter allows to gather the following metrics:
+- All available metrics in SonarQube
+- All active projects and their metrics and tags
+- The list of tags used to use tag filter in the dashboards
+
+Two sample dashboard definitions are provided as well:
+- Detailed dashboard
+  - User is able to select one project, pre-filtering by tag
+  - For a given project, it displays the last value of 4 most common rates: Reliability rating, Security rating, Technical Debt rating & Cove coverage   
+  - For a given project, it displays the historical value of 4 most common metrics: bugs, vulnerabilities, code coverage & code smells
+
+- Executive dashboard
+  - User is able to select one tag
+  - For a given tag, it displays the historical value of 4 most common metrics for all the projects with that tag: bugs, vulnerabilities, code coverage & code smells
+
+Constraints:
+- Proper tagging system is highly encouraged in SonarQube. Project with no tag won't be displayed as the pre-filter is done by tags.
+
+### How to use
 
 First make sure there is communication and be able to authenticate to Sonarqube:
 ```
