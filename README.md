@@ -16,6 +16,8 @@ The exporter allows to gather the following metrics:
 - All active projects and their metrics and tags
 - The list of tags used to use tag filter in the dashboards
 
+### Grafana dashboards
+
 Two sample dashboard definitions are provided as well:
 - Detailed dashboard
   - User is able to select one project, pre-filtering by tag
@@ -86,17 +88,3 @@ In the **config.py** file, you will find a variable named **SUPPORTED_KEYS**, wh
 Prometheus, as a best practice, includes a value for documentation and Sonarqube natively exposes descriptions of each metric. Thus, the description of Sonarqube was addressed as documentation of Prometheus.
 
 Each metric will have its name preserved by just adding the prefix *"sonar _"*, making it easy to identify in Prometheus.
-
-## Grafana
-
-Within my reality, not all metrics were used, but some that made sense at the moment include in a dashboard.
-
-In this dashboard, projects are captured from the *sonar_bugs* metric and collecting the project key. You can view all metrics, only one or more than one.
-
-Import the *grafana_dashboard.json* file, changing the DataSource to your reality.
-
-### Dashboard screenshot
-
-Simple dashboard with the possibility to filter by projects. For each selected project, a Gauge graph will be added and the others with line graphs will have one more line with that value. You can select all projects.
-
-![Simple dashboard](dashboard_screenshot/simple_dashboard_project_filter.jpg)
