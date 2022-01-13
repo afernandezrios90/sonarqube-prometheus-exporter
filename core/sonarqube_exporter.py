@@ -172,6 +172,7 @@ def get_all_projects_with_metrics():
         p.organization = project['organization']
         p.tags = project['tags']
         p.metrics = client.get_measures_component(component_key=p.key, metric_key=metrics_comma_separated)
+        #TODO: add a function to transform the "ncloc_language_distribution" metric (string) into several "lines_per_language" metrics (int)
         p.organize_measures(metrics)
         projects.append(p)
 

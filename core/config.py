@@ -95,6 +95,7 @@ SUPPORTED_KEYS = [
             "lines",
             "ncloc",
             "ncloc_data",
+            "ncloc_language_distribution"
             "projects",
             "statements"
         ]

@@ -36,7 +36,6 @@ class CustomSonarExporter:
                         label_list.append(metric_value[0])
                         label_values.append(metric_value[1])
 
-                # Expose also the tag list as metrics with a dummy value "1" to be able to filter in Grafana by tags
                 gauge = GaugeMetricFamily(
                     name="sonar_{}".format(metric.key),
                     documentation=metric.description,
@@ -49,7 +48,7 @@ class CustomSonarExporter:
                 )
                 yield gauge
 
-
+        # Expose also the tag list as metrics with a dummy value "1" to be able to filter in Grafana by tags
         gauge_tag_list = GaugeMetricFamily(
             name="sonar_tag_index",
             documentation="Tag index for filtering",
