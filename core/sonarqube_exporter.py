@@ -72,16 +72,21 @@ class Project:
         self._tags = value
 
     def organize_measures(self, metrics : list):
+        # Self is the object of class Project, metrics is the list of available metrics
         metric_obj_list = []
+        # Iterate over the metrics measured for the project
         for metric in self.metrics['component']['measures']:
             if 'metric' in metric:
                 m = Metric()
                 tuple_list = []
+                # Iterate on the available metrics, search the information of the metric that has been measued and fill in the metric object 
                 for metric_obj in metrics:
                     if metric_obj.key == metric['metric']:
                         m.key = metric_obj.key
                         m.description = metric_obj.description
                         m.domain = metric_obj.domain
+                # Transform the each individual metric (which is an object) into a tuple, then append all values except the metric name itself,
+                # which is assigned to the metric key
                 for met_tuples in self.transform_object_in_list_tuple(metric):
                     if met_tuples[0] == 'metric':
                         m.key = met_tuples[1]
@@ -92,9 +97,13 @@ class Project:
         self.metrics = metric_obj_list
 
     def transform_object_in_list_tuple(self, metric_object):
+        # Transform object into tuple, example:
+        # OLD --> {'metric': 'duplicated_lines_density','value': '11,4','bestValue': False}
+        # NEW --> [('value','11,4'),('bestValue','False')]
         object_list_tuples = []
         for item in metric_object:
             if isinstance(metric_object[item], list):
+                # Recursivity for allowing nested objects
                 for obj in metric_object[item]:
                     object_list_tuples.extend(self.transform_object_in_list_tuple(metric_object=obj))
             else:
@@ -166,12 +175,14 @@ def get_all_projects_with_metrics():
         if metric.description:
             metrics_comma_separated = "{},{}".format(metric.key, metrics_comma_separated)
 
+
     for project in all_projects['components']:
         p = Project(identifier=project['id'], key=project['key'])
         p.name = project['name']
         p.organization = project['organization']
         p.tags = project['tags']
         p.metrics = client.get_measures_component(component_key=p.key, metric_key=metrics_comma_separated)
+
         #TODO: add a function to transform the "ncloc_language_distribution" metric (string) into several "lines_per_language" metrics (int)
         p.organize_measures(metrics)
         projects.append(p)

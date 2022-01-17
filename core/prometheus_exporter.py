@@ -1,3 +1,4 @@
+import enum
 from prometheus_client.core import GaugeMetricFamily
 import prometheus_client as prom
 import time
@@ -19,34 +20,62 @@ class CustomSonarExporter:
                 label_values = []
                 value_to_set = None
 
+                # Set the common labels to all metrics (project ID, project key & project name)
                 label_values.append(project.id)
                 label_values.append(project.key)
                 label_values.append(project.name)
 
+                # If the project has associated tags, add a string with the tags as label as well
                 if len(project.tags):
                     label_list.append('tags')
                     label_values.append("|".join(project.tags))
-                    # Add any new tags to the tag list
+                    # Add any new tags to the tag list (for later usage)
                     tags.update(project.tags)
 
-                for metric_value in metric.values:
-                    if metric_value[0] == 'value':
-                        value_to_set = metric_value[1]
-                    else:
-                        label_list.append(metric_value[0])
-                        label_values.append(metric_value[1])
+                # Special case: for 'ncloc_language_distribution', generate one 'lines_per_language' metric per language
+                # Sample: [('value','cs=10846;scss=293;ts=4436')]
+                if metric.key == 'ncloc_language_distribution':
+                    languages_metrics = metric.values[0][1].split(';')
+                    languages = [i.split('=')[0] for i in languages_metrics]
+                    l_metrics = [i.split('=')[1] for i in languages_metrics]
 
-                gauge = GaugeMetricFamily(
-                    name="sonar_{}".format(metric.key),
-                    documentation=metric.description,
-                    labels=label_list
-                )
+                    label_list_lang = label_list.copy()
+                    label_list_lang.append('language')
+                    gauge = GaugeMetricFamily(
+                        name='sonar_lines_per_language',
+                        documentation=metric.description,
+                        labels=label_list_lang
+                        )
+                    
+                    for i, v in enumerate(languages):
+                        label_values_lang = label_values.copy()
+                        label_values_lang.append(v)
+                        
+                        gauge.add_metric(
+                            labels=label_values_lang,
+                            value=l_metrics[i]
+                        )
+                        yield gauge
 
-                gauge.add_metric(
-                    labels=label_values,
-                    value=value_to_set
-                )
-                yield gauge
+                else:
+                    for metric_value in metric.values:
+                        if metric_value[0] == 'value':
+                            value_to_set = metric_value[1]
+                        else:
+                            label_list.append(metric_value[0])
+                            label_values.append(metric_value[1])
+
+                    gauge = GaugeMetricFamily(
+                        name="sonar_{}".format(metric.key),
+                        documentation=metric.description,
+                        labels=label_list
+                    )
+
+                    gauge.add_metric(
+                        labels=label_values,
+                        value=value_to_set
+                    )
+                    yield gauge
 
         # Expose also the tag list as metrics with a dummy value "1" to be able to filter in Grafana by tags
         gauge_tag_list = GaugeMetricFamily(
