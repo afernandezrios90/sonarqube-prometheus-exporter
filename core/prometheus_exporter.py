@@ -1,4 +1,5 @@
 import enum
+from posixpath import split
 from prometheus_client.core import GaugeMetricFamily
 import prometheus_client as prom
 import time
@@ -15,15 +16,26 @@ class CustomSonarExporter:
         tags = set()
 
         for project in projects:
+
+            # First of all extract the languages used 
+            lang_used = [lang for lang in project.metrics if lang.key == 'ncloc_language_distribution']
+            if len(lang_used):
+                lang_used = lang_used[0].values[0][1]
+                lang_used = lang_used.split(';')
+                lang_used = list(map(lambda s: s.split('=')[0], lang_used))
+            else:
+                lang_used = ''
+            
             for metric in project.metrics:
-                label_list = ['id', 'key', 'name']
+                label_list = ['id', 'key', 'name', 'languages']
                 label_values = []
                 value_to_set = None
 
-                # Set the common labels to all metrics (project ID, project key & project name)
+                # Set the common labels to all metrics (project ID, project key, project name & languages used)
                 label_values.append(project.id)
                 label_values.append(project.key)
                 label_values.append(project.name)
+                label_values.append("|".join(lang_used))
 
                 # If the project has associated tags, add a string with the tags as label as well
                 if len(project.tags):
