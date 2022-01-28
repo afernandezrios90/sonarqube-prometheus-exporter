@@ -29,6 +29,9 @@ class SonarExporter:
     def get_measures_component(self, component_key, metric_key):
         return self._request(endpoint="api/measures/component?component={}&metricKeys={}".format(component_key, metric_key))
 
+    def get_code_smells(self, component_key):
+        return self._request(endpoint="api/issues/search?componentKeys={}&types=CODE_SMELL&statuses=OPEN,REOPENED&facets=severities&facetMode=count".format(component_key))
+
 class Project:
 
     def __init__(self, identifier, key):
@@ -111,13 +114,24 @@ class Project:
                 object_list_tuples.append(obj_tuple)
         return object_list_tuples
 
+    def organize_code_smells(self, code_smells):
+        for code_smell in code_smells['facets'][0]['values']:
+            # Create a new Metric object and format the information
+            m = Metric()
+            m.key = 'code_smells_' + code_smell['val'].lower()
+            m.description = 'Number of code smells for severity: ' + code_smell['val']
+            m.domain = 'Maintainability'
+            m.values.append(('value',str(code_smell['count'])))
+            # Append the metric to the list of existing metrics
+            self.metrics.append(m)
+
 class Metric:
 
     def __init__(self):
-        self._key = None
-        self._values = []
-        self._description = None
-        self._domain = None
+        self._key = None # Example 'sqale_debt_ratio'
+        self._values = [] # Example [('value', '0.0), ('bestValue', 'True')]
+        self._description = None # Example 'Ratio of the technical debt'
+        self._domain = None # Example 'Maintainability'
 
     @property
     def key(self):
@@ -182,9 +196,10 @@ def get_all_projects_with_metrics():
         p.organization = project['organization']
         p.tags = project['tags']
         p.metrics = client.get_measures_component(component_key=p.key, metric_key=metrics_comma_separated)
-
-        #TODO: add a function to transform the "ncloc_language_distribution" metric (string) into several "lines_per_language" metrics (int)
         p.organize_measures(metrics)
+        code_smells = client.get_code_smells(component_key=p.key)
+        p.organize_code_smells(code_smells)
+
         projects.append(p)
 
     return projects
