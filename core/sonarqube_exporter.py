@@ -195,11 +195,12 @@ def get_all_projects_with_metrics():
         p.name = project['name']
         p.organization = project['organization']
         p.tags = project['tags']
+        # Get the standard metrics
         p.metrics = client.get_measures_component(component_key=p.key, metric_key=metrics_comma_separated)
         p.organize_measures(metrics)
+        # Get the code smells by severity
         code_smells = client.get_code_smells(component_key=p.key)
         p.organize_code_smells(code_smells)
-
         projects.append(p)
 
     return projects

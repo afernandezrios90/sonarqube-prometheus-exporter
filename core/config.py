@@ -35,60 +35,34 @@ SUPPORTED_KEYS = [
         "domain" : "Security",
         "keys" : [
             "vulnerabilities",
-            "security_rating",
-            "security_review_rating"
+            "security_rating"
         ]
     },
     {
         "domain" : "Maintainability",
         "keys" : [
             "code_smells",
-            "sqale_rating",
-            "sqale_index",
-            "sqale_debt_ratio"
+            "sqale_rating"
         ]
     },
     {
         "domain" : "Duplications",
-        "keys" : [
-            "duplicated_blocks",
-            "duplicated_files",
-            "duplicated_lines",
-            "duplicated_lines_density",
-            "duplications_data"
-        ]
+        "keys" : []
     },
     {
         "domain" : "Coverage",
         "keys" : [
-            "branch_coverage",
-            "executable_lines_data",
-            "line_coverage",
-            "lines_to_cover"
+            "line_coverage"
         ]
     },
     {
         "domain" : "Size",
         "keys" : [
-            "comment_lines",
-            "comment_lines_data",
-            "comment_lines_density",
-            "generated_lines",
-            "generated_ncloc",
-            "lines",
-            "ncloc",
-            "ncloc_data",
-            "ncloc_language_distribution",
-            "projects",
-            "statements"
+            "ncloc_language_distribution"
         ]
     },
     {
         "domain" : "Issues",
-        "keys" : [
-            "open_issues",
-            "reopened_issues",
-            "confirmed_issues"
-        ]
+        "keys" : []
     }
 ]
