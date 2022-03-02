@@ -27,12 +27,11 @@ class CustomSonarExporter:
                 lang_used = ''
             
             for metric in project.metrics:
-                label_list = ['id', 'key', 'name', 'languages']
+                label_list = ['key', 'name', 'languages']
                 label_values = []
                 value_to_set = None
 
                 # Set the common labels to all metrics (project ID, project key, project name & languages used)
-                label_values.append(project.id)
                 label_values.append(project.key)
                 label_values.append(project.name)
                 label_values.append("|".join(lang_used))

@@ -34,12 +34,10 @@ class SonarExporter:
 
 class Project:
 
-    def __init__(self, identifier, key):
-        self.id = identifier
+    def __init__(self, key):
         self.key = key
         self._metrics = None
         self._name = None
-        self._organization = None
         self._tags = None
 
     @property
@@ -57,14 +55,6 @@ class Project:
     @metrics.setter
     def metrics(self, value):
         self._metrics = value
-
-    @property
-    def organization(self):
-        return self._organization
-
-    @organization.setter
-    def organization(self, value):
-        self._organization = value
 
     @property
     def tags(self):
@@ -191,9 +181,8 @@ def get_all_projects_with_metrics():
 
 
     for project in all_projects['components']:
-        p = Project(identifier=project['id'], key=project['key'])
+        p = Project(key=project['key'])
         p.name = project['name']
-        p.organization = project['organization']
         p.tags = project['tags']
         # Get the standard metrics
         p.metrics = client.get_measures_component(component_key=p.key, metric_key=metrics_comma_separated)
